@@ -6,6 +6,7 @@
 #include <Profiler.h>
 #include <Logger.h>
 #include <DebugMgr.h>
+#include <Entity.h>
 
 int main()
 {
@@ -22,6 +23,9 @@ int main()
     sf::Clock clock;
     clock.restart();
 
+    Entity firstEntity;
+    firstEntity.Start();
+    
     while (window.isOpen())
     {
         gData.IncrementFrameCount();
