@@ -32,3 +32,8 @@ void Entity::Destroy()
 void Entity::Draw(sf::RenderWindow& window) const
 {
 }
+
+const std::string& Entity::GetName() const 
+{ 
+	return FriendlyName; 
+}

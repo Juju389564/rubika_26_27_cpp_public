@@ -70,3 +70,8 @@ bool Scene::RemoveEntity(Entity* entity)
 	Entities.erase(it);
 	return true;
 }
+
+const std::vector<std::unique_ptr<Entity>>& Scene::GetEntities() const
+{
+	return Entities;
+}

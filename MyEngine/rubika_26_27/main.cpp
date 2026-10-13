@@ -12,16 +12,17 @@
 int main()
 {
     gData.Init();
-
+    /*
     Scene scene("Test");
-    scene.AddEntity(std::make_unique<Entity>("A"));
+    scene.AddEntity(std::make_unique<Entity>("Bob"));
     scene.Start();
     scene.Update(0.016f);
-    scene.Destroy();
+    scene.Destroy();*/
 
     sf::RenderWindow window(sf::VideoMode({ 1080, 720 }), "SFML works!", sf::State::Windowed);
 
     ImGui::SFML::Init(window);
+
 
     Logger::Info("This is an info message. That is useful");
     Logger::Warning("This is a warning message. Should I worry?");

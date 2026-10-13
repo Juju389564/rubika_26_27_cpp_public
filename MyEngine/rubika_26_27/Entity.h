@@ -24,6 +24,8 @@ public:
 	*/
 	void Draw(sf::RenderWindow& window) const;
 
+	const std::string& GetName() const;
+
 protected:
 	std::string FriendlyName;
 	TransformComponent Transform;
