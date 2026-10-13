@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "TransformComponent.h"
 
 namespace sf
 {
@@ -22,4 +23,8 @@ public:
 	 * Function that will be called each frame to draw the entity
 	*/
 	void Draw(sf::RenderWindow& window) const;
+
+protected:
+	std::string FriendlyName;
+	TransformComponent Transform;
 };

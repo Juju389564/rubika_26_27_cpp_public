@@ -1,25 +1,34 @@
 #include "Entity.h"
-#include <Logger.h>
-#include <TransformComponent.h>
+#include "Logger.h"
 
+#include <SFML/Graphics/RenderWindow.hpp>
 
-Entity::Entity(std::string friendlyName) 
-{}
+Entity::Entity(std::string friendlyName)
+	: FriendlyName(std::move(friendlyName))
+{
+	Logger::Info("Entity created: " + FriendlyName);
+}
 
 Entity::~Entity()
-{}
-
-void Entity::Start() 
 {
-	Logger::Info("A new entity has been instantiate");
+	Logger::Info("Entity destroyed: " + FriendlyName);
+}
+
+void Entity::Start()
+{
+	Transform.Start();
 }
 
 void Entity::Update(float fDeltaTime)
-{}
+{
+	Transform.Update(fDeltaTime);
+}
 
-void Entity::Destroy() 
-{}
+void Entity::Destroy()
+{
+	Transform.Destroy();
+}
 
-void Entity::Draw(sf::RenderWindow& window) const 
-{}
-
+void Entity::Draw(sf::RenderWindow& window) const
+{
+}

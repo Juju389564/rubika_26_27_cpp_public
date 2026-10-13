@@ -7,10 +7,17 @@
 #include <Logger.h>
 #include <DebugMgr.h>
 #include <Entity.h>
+#include <Scene.h>
 
 int main()
 {
     gData.Init();
+
+    Scene scene("Test");
+    scene.AddEntity(std::make_unique<Entity>("A"));
+    scene.Start();
+    scene.Update(0.016f);
+    scene.Destroy();
 
     sf::RenderWindow window(sf::VideoMode({ 1080, 720 }), "SFML works!", sf::State::Windowed);
 
@@ -22,9 +29,6 @@ int main()
 
     sf::Clock clock;
     clock.restart();
-
-    Entity firstEntity;
-    firstEntity.Start();
     
     while (window.isOpen())
     {
