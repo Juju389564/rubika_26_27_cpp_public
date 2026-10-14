@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DebugMgr.h"
+
 #include <SFML/Graphics/Texture.hpp>
 
 #include <filesystem>
@@ -42,7 +44,7 @@ struct TextureData
 	friend class TextureMgr;
 };
 
-class TextureMgr final
+class TextureMgr final : public IDebugable
 {
 public:
 	void Init();
@@ -60,6 +62,8 @@ public:
 	 * Returns the corresponding TextureData using the name of the texture. Returns the default TextureData in case of an unknown name
 	 */
 	const TextureData& GetTextureData(const std::string& name) const;
+
+	virtual void DrawDebug() override;
 
 private:
 	std::unordered_map<std::string, TextureData> Textures;

@@ -1,8 +1,15 @@
 #include "TextureMgr.h"
+
 #include "Logger.h"
+#include "Globals.h"
 
 #include <rapidxml/rapidxml.hpp>
 #include <rapidxml/rapidxml_utils.hpp>
+#include <SFML/Graphics/Image.hpp>
+
+#ifdef _USE_IMGUI
+#include <Imgui/imgui.h>
+#endif
 
 #include <charconv>
 #include <cstring>
@@ -192,6 +199,45 @@ namespace
 		}
 	}
 
+	constexpr unsigned int DefaultTextureSize = 64;
+	constexpr unsigned int DefaultCellSize = 16;
+
+	bool CreateDefaultTexture(TextureData& data)
+	{
+		sf::Image image(sf::Vector2u(DefaultTextureSize, DefaultTextureSize), sf::Color::Black);
+
+		for (unsigned int y = 0; y < DefaultTextureSize; ++y)
+		{
+			for (unsigned int x = 0; x < DefaultTextureSize; ++x)
+			{
+				if (((x / DefaultCellSize) + (y / DefaultCellSize)) % 2 == 0)
+				{
+					image.setPixel({ x, y }, sf::Color::Magenta);
+				}
+			}
+		}
+
+		if (!data.Texture.loadFromImage(image))
+		{
+			Logger::Error("TextureMgr: failed to create the default texture");
+			return false;
+		}
+
+		AnimationData animation;
+		animation.SizeX = DefaultTextureSize;
+		animation.SizeY = DefaultTextureSize;
+		animation.AnimationSpriteCount = 1;
+		animation.SpriteOnLine = 1;
+		data.AnimationsData.emplace("Default", animation);
+
+		StaticTileData tile;
+		tile.SizeX = DefaultTextureSize;
+		tile.SizeY = DefaultTextureSize;
+		data.StaticTilesData.emplace("Default", tile);
+
+		return true;
+	}
+
 }
 
 TextureData::TextureData() {}
@@ -199,10 +245,13 @@ TextureData::~TextureData() {}
 
 void TextureMgr::Init()
 {
+	CreateDefaultTexture(DefaultTexture);
+	gData.DebugMgr->RegisterDebugableWindow("Textures", this);
 }
 
 void TextureMgr::Shut()
 {
+	gData.DebugMgr->UnregisterDebugableWindow("Textures");
 	Textures.clear();
 }
 
@@ -247,4 +296,12 @@ const TextureData& TextureMgr::GetTextureData(const std::string& name) const
 		return DefaultTexture;
 	}
 	return it->second;
+}
+
+void TextureMgr::DrawDebug()
+{
+#ifdef _USE_IMGUI
+	
+
+#endif
 }

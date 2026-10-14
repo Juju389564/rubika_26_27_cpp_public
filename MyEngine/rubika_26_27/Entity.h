@@ -1,12 +1,13 @@
 #pragma once
 
 #include <string>
-#include "TransformComponent.h"
 
 namespace sf
 {
 	class RenderWindow;
 }
+
+class TransformComponent;
 
 class Entity
 {
@@ -28,5 +29,5 @@ public:
 
 protected:
 	std::string FriendlyName;
-	TransformComponent Transform;
+	TransformComponent* Transform;
 };

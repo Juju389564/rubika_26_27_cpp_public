@@ -143,8 +143,5 @@
     <ClInclude Include="SceneMgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextureMgr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

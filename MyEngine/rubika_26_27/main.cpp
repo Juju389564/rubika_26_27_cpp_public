@@ -16,7 +16,14 @@ int main()
     gData.Init();
 
     Logger::Info("Working dir: " + std::filesystem::current_path().string());
+    gData.TextureMgr->LoadTexture("../Ressources/enemy_texture_1.png");
+    gData.TextureMgr->LoadTexture("../Ressources/enemy_texture_2.png");
+    gData.TextureMgr->LoadTexture("../Ressources/enemy_texture_3.png");
+    gData.TextureMgr->LoadTexture("../Ressources/enemy_texture_4.png");
+    gData.TextureMgr->LoadTexture("../Ressources/enemy_texture_5.png");
+    gData.TextureMgr->LoadTexture("../Ressources/Antonio_Belpaese.png");
     gData.TextureMgr->LoadTexture("../Ressources/IsaacSprite.png");
+    gData.TextureMgr->LoadTexture("../Ressources/Basement.png");
 
     gData.SceneMgr->AddScene(std::make_unique<Scene>("Menu"));
     gData.SceneMgr->AddScene(std::make_unique<Scene>("Game"));
@@ -70,6 +77,20 @@ int main()
         //ImGui::ShowDemoWindow();
         //Logger::DrawLogger();
         gData.DebugMgr->Draw();
+
+        ImGui::Begin("Test texture");
+        ImGui::Image(gData.TextureMgr->GetTextureData("enemy_texture_1").Texture);
+        ImGui::Image(gData.TextureMgr->GetTextureData("enemy_texture_2").Texture);
+        ImGui::Image(gData.TextureMgr->GetTextureData("enemy_texture_3").Texture);
+        ImGui::Image(gData.TextureMgr->GetTextureData("enemy_texture_4").Texture);
+        ImGui::Image(gData.TextureMgr->GetTextureData("enemy_texture_5").Texture);
+        ImGui::Image(gData.TextureMgr->GetTextureData("Antonio_Belpaese").Texture);
+        ImGui::Image(gData.TextureMgr->GetTextureData("IsaacSprite").Texture);
+        ImGui::Image(gData.TextureMgr->GetTextureData("None").Texture);
+        ImGui::Image(gData.TextureMgr->GetTextureData("Basement").Texture);
+        ImGui::End();
+
+
         gData.SceneMgr->Update(fDeltaTimeS);
 
         PROFILER_EVENT_END();
