@@ -28,4 +28,6 @@ private:
     std::unordered_map<std::string, std::unique_ptr<Scene>> Scenes;
     Scene* ActiveScene = nullptr;
     int EntityCounter = 0;
+    char NewSceneName[64] = "";
+    int SceneCounter = 0;
 };

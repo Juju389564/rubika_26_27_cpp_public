@@ -88,8 +88,12 @@ bool SceneMgr::SetActiveScene(const std::string& name)
     if (newScene == ActiveScene)
         return true;
 
-    if (ActiveScene)
+    if (ActiveScene) 
+    {
         ActiveScene->Destroy();
+        EntityCounter = 0;
+    }
+        
 
     ActiveScene = newScene;
     ActiveScene->Start();
@@ -105,6 +109,24 @@ Scene* SceneMgr::GetActiveScene() const
 void SceneMgr::DrawDebug()
 {
 #ifdef _USE_IMGUI
+
+    ImGui::InputText("##NewSceneName", NewSceneName, sizeof(NewSceneName));
+    ImGui::SameLine();
+    if (ImGui::Button("Add scene"))
+    {
+        std::string name = NewSceneName;
+        if (name.empty())
+        {
+            name = "Scene " + std::to_string(SceneCounter++);
+        }
+
+        if (AddScene(std::make_unique<Scene>(name)))
+        {
+            NewSceneName[0] = '\0';   
+        }
+    }
+    ImGui::Separator();
+
     ImGui::Text("Active scene: %s", ActiveScene ? ActiveScene->GetName().c_str() : "none");
     ImGui::Separator();
     

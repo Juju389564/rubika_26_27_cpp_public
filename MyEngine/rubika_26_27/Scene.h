@@ -16,7 +16,7 @@ class Scene
 {
 public:
 	Scene(const std::string& name);
-	~Scene();
+	virtual ~Scene();
 
 	virtual void Start();
 	virtual void Update(float fDeltaTime);

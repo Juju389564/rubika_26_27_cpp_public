@@ -6,18 +6,21 @@
 #include <Profiler.h>
 #include <Logger.h>
 #include <DebugMgr.h>
-#include <Entity.h>
 #include <Scene.h>
+#include <SceneMgr.h>
+#include <TextureMgr.h>
+#include <memory>
 
 int main()
 {
     gData.Init();
-    /*
-    Scene scene("Test");
-    scene.AddEntity(std::make_unique<Entity>("Bob"));
-    scene.Start();
-    scene.Update(0.016f);
-    scene.Destroy();*/
+
+    Logger::Info("Working dir: " + std::filesystem::current_path().string());
+    gData.TextureMgr->LoadTexture("../Ressources/IsaacSprite.png");
+
+    gData.SceneMgr->AddScene(std::make_unique<Scene>("Menu"));
+    gData.SceneMgr->AddScene(std::make_unique<Scene>("Game"));
+    gData.SceneMgr->SetActiveScene("Menu");
 
     sf::RenderWindow window(sf::VideoMode({ 1080, 720 }), "SFML works!", sf::State::Windowed);
 
@@ -67,11 +70,13 @@ int main()
         //ImGui::ShowDemoWindow();
         //Logger::DrawLogger();
         gData.DebugMgr->Draw();
+        gData.SceneMgr->Update(fDeltaTimeS);
 
         PROFILER_EVENT_END();
 
         PROFILER_EVENT_BEGIN(PROFILER_COLOR_GREEN, "Draw");
         window.clear();
+        gData.SceneMgr->Draw(window);
 
 #ifdef _USE_IMGUI
         ImGui::SFML::Render(window);

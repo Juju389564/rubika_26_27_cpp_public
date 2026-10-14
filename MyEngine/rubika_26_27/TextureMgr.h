@@ -4,6 +4,7 @@
 
 #include <filesystem>
 #include <string>
+#include <unordered_map>
 
 struct AnimationData
 {
@@ -35,8 +36,8 @@ struct TextureData
 	~TextureData();
 
 	sf::Texture Texture;
-	// Container of AnimationData AnimationsData;
-	// Container of StaticTileData StaticTilesData;
+	std::unordered_map<std::string, AnimationData> AnimationsData;
+	std::unordered_map<std::string, StaticTileData> StaticTilesData;
 
 	friend class TextureMgr;
 };
@@ -59,4 +60,8 @@ public:
 	 * Returns the corresponding TextureData using the name of the texture. Returns the default TextureData in case of an unknown name
 	 */
 	const TextureData& GetTextureData(const std::string& name) const;
+
+private:
+	std::unordered_map<std::string, TextureData> Textures;
+	TextureData DefaultTexture;
 };
