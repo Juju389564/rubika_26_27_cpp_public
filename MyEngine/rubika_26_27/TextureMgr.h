@@ -68,4 +68,8 @@ public:
 private:
 	std::unordered_map<std::string, TextureData> Textures;
 	TextureData DefaultTexture;
+
+	char LoadPathInput[260] = "";
+	std::string SelectedTexture;   
+	std::string SelectedEntry;
 };

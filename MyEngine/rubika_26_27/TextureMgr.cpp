@@ -2,6 +2,7 @@
 
 #include "Logger.h"
 #include "Globals.h"
+#include "DebugMgr.h"
 
 #include <rapidxml/rapidxml.hpp>
 #include <rapidxml/rapidxml_utils.hpp>
@@ -9,10 +10,12 @@
 
 #ifdef _USE_IMGUI
 #include <Imgui/imgui.h>
+#include <Imgui/imgui-SFML.h>
 #endif
 
 #include <charconv>
 #include <cstring>
+#include <algorithm>
 
 namespace
 {
@@ -301,7 +304,146 @@ const TextureData& TextureMgr::GetTextureData(const std::string& name) const
 void TextureMgr::DrawDebug()
 {
 #ifdef _USE_IMGUI
-	
 
+	ImGui::InputText("##LoadPath", LoadPathInput, sizeof(LoadPathInput));
+	ImGui::SameLine();
+	if (ImGui::Button("Load"))
+	{
+		if (LoadTexture(LoadPathInput))
+		{
+			LoadPathInput[0] = '\0';
+		}
+	}
+	ImGui::Separator();
+
+
+	if (ImGui::BeginCombo("Texture", SelectedTexture.empty() ? "Default" : SelectedTexture.c_str()))
+	{
+		if (ImGui::Selectable("Default", SelectedTexture.empty()))
+		{
+			SelectedTexture.clear();
+			SelectedEntry.clear();
+		}
+		for (const auto& [name, data] : Textures)
+		{
+			if (ImGui::Selectable(name.c_str(), name == SelectedTexture))
+			{
+				SelectedTexture = name;
+				SelectedEntry.clear();
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	const TextureData* current = &DefaultTexture;
+	const auto found = Textures.find(SelectedTexture);
+	if (found != Textures.end())
+	{
+		current = &found->second;
+	}
+
+
+	const sf::Vector2u size = current->Texture.getSize();
+	ImGui::Text("Size: %u x %u", size.x, size.y);
+	if (size.x == 0 || size.y == 0)
+	{
+		ImGui::TextUnformatted("Empty texture");
+		return;
+	}
+
+	const float maxHeight = 300.f;
+	const float scale = std::min(ImGui::GetContentRegionAvail().x / size.x, maxHeight / size.y);
+
+	const ImVec2 imagePos = ImGui::GetCursorScreenPos();
+	ImGui::Image(current->Texture, sf::Vector2f(size.x * scale, size.y * scale));
+
+
+	ImDrawList* drawList = ImGui::GetWindowDrawList();
+	auto drawRect = [&](int x, int y, int w, int h)
+		{
+			drawList->AddRect(
+				ImVec2(imagePos.x + x * scale, imagePos.y + y * scale),
+				ImVec2(imagePos.x + (x + w) * scale, imagePos.y + (y + h) * scale),
+				IM_COL32(0, 255, 0, 255));
+		};
+
+	const auto animIt = current->AnimationsData.find(SelectedEntry);
+	if (animIt != current->AnimationsData.end())
+	{
+		const AnimationData& a = animIt->second;
+		const int count = std::max(a.AnimationSpriteCount, 1);
+		const int perLine = std::max(a.SpriteOnLine, 1);   
+		for (int i = 0; i < count; ++i)
+		{
+			drawRect(a.StartX + (i % perLine) * (a.SizeX + a.OffsetX),
+				a.StartY + (i / perLine) * (a.SizeY + a.OffsetY),
+				a.SizeX, a.SizeY);
+		}
+	}
+
+	const auto tileIt = current->StaticTilesData.find(SelectedEntry);
+	if (tileIt != current->StaticTilesData.end())
+	{
+		const StaticTileData& t = tileIt->second;
+		drawRect(t.StartX, t.StartY, t.SizeX, t.SizeY);
+	}
+
+	if (!current->AnimationsData.empty()
+		&& ImGui::BeginTable("##Animations", 8, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX))
+	{
+		ImGui::TableSetupColumn("Name");
+		ImGui::TableSetupColumn("Start");
+		ImGui::TableSetupColumn("Size");
+		ImGui::TableSetupColumn("Offset");
+		ImGui::TableSetupColumn("Sprites");
+		ImGui::TableSetupColumn("Per line");
+		ImGui::TableSetupColumn("Reverted");
+		ImGui::TableSetupColumn("Time (s)");
+		ImGui::TableHeadersRow();
+
+		for (const auto& [name, a] : current->AnimationsData)
+		{
+			ImGui::TableNextRow();
+			ImGui::TableSetColumnIndex(0);
+			if (ImGui::Selectable(name.c_str(), name == SelectedEntry, ImGuiSelectableFlags_SpanAllColumns))
+			{
+				SelectedEntry = name;
+			}
+			ImGui::TableSetColumnIndex(1); ImGui::Text("%d, %d", a.StartX, a.StartY);
+			ImGui::TableSetColumnIndex(2); ImGui::Text("%d x %d", a.SizeX, a.SizeY);
+			ImGui::TableSetColumnIndex(3); ImGui::Text("%d, %d", a.OffsetX, a.OffsetY);
+			ImGui::TableSetColumnIndex(4); ImGui::Text("%d", a.AnimationSpriteCount);
+			ImGui::TableSetColumnIndex(5); ImGui::Text("%d", a.SpriteOnLine);
+			ImGui::TableSetColumnIndex(6); ImGui::TextUnformatted(a.IsReverted ? "yes" : "no");
+			ImGui::TableSetColumnIndex(7); ImGui::Text("%.2f", a.TimeBetweenAnimationInS);
+		}
+		ImGui::EndTable();
+	}
+
+	if (!current->StaticTilesData.empty()
+		&& ImGui::BeginTable("##Tiles", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX))
+	{
+		ImGui::TableSetupColumn("Name");
+		ImGui::TableSetupColumn("Start");
+		ImGui::TableSetupColumn("Size");
+		ImGui::TableSetupColumn("Flip X");
+		ImGui::TableSetupColumn("Flip Y");
+		ImGui::TableHeadersRow();
+
+		for (const auto& [name, t] : current->StaticTilesData)
+		{
+			ImGui::TableNextRow();
+			ImGui::TableSetColumnIndex(0);
+			if (ImGui::Selectable(name.c_str(), name == SelectedEntry, ImGuiSelectableFlags_SpanAllColumns))
+			{
+				SelectedEntry = name;
+			}
+			ImGui::TableSetColumnIndex(1); ImGui::Text("%d, %d", t.StartX, t.StartY);
+			ImGui::TableSetColumnIndex(2); ImGui::Text("%d x %d", t.SizeX, t.SizeY);
+			ImGui::TableSetColumnIndex(3); ImGui::TextUnformatted(t.IsRevertedX ? "yes" : "no");
+			ImGui::TableSetColumnIndex(4); ImGui::TextUnformatted(t.IsRevertedY ? "yes" : "no");
+		}
+		ImGui::EndTable();
+	}
 #endif
 }

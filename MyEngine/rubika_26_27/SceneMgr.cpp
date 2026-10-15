@@ -129,6 +129,9 @@ void SceneMgr::DrawDebug()
 
     ImGui::Text("Active scene: %s", ActiveScene ? ActiveScene->GetName().c_str() : "none");
     ImGui::Separator();
+
+    std::string sceneToDelete;
+    bool deleteRequested = false;
     
     for (const auto& [name, scene] : Scenes)
     {
@@ -147,6 +150,13 @@ void SceneMgr::DrawDebug()
         }
         ImGui::SameLine();
 
+        if (ImGui::Button("DELETE SCENE"))
+        {
+            sceneToDelete = name;
+            deleteRequested = true;
+        }
+        ImGui::SameLine();
+
         const bool isActive = (scene.get() == ActiveScene);
         const std::string label = name + (isActive ? " (active)" : "");
         if (ImGui::TreeNode(label.c_str()))
@@ -160,5 +170,11 @@ void SceneMgr::DrawDebug()
 
         ImGui::PopID();
     }
+
+    if (deleteRequested)
+    {
+        RemoveScene(sceneToDelete);
+    }
+
 #endif
 }

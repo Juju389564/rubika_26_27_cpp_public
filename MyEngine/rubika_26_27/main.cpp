@@ -78,6 +78,8 @@ int main()
         //Logger::DrawLogger();
         gData.DebugMgr->Draw();
 
+        //fenetre de test des textures : 
+        /*
         ImGui::Begin("Test texture");
         ImGui::Image(gData.TextureMgr->GetTextureData("enemy_texture_1").Texture);
         ImGui::Image(gData.TextureMgr->GetTextureData("enemy_texture_2").Texture);
@@ -89,7 +91,7 @@ int main()
         ImGui::Image(gData.TextureMgr->GetTextureData("None").Texture);
         ImGui::Image(gData.TextureMgr->GetTextureData("Basement").Texture);
         ImGui::End();
-
+        */
 
         gData.SceneMgr->Update(fDeltaTimeS);
 

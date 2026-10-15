@@ -6,14 +6,16 @@
 
 Entity::Entity(std::string friendlyName)
 	: FriendlyName(std::move(friendlyName))
+	, Transform (new::TransformComponent())
 {
 	Logger::Info("Entity created: " + FriendlyName);
-	Transform = new::TransformComponent();
 }
 
 Entity::~Entity()
 {
 	Logger::Info("Entity destroyed: " + FriendlyName);
+	delete Transform;
+	Transform = nullptr;
 }
 
 void Entity::Start()
