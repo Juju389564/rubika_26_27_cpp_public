@@ -1,8 +1,10 @@
 #pragma once
 
+#include "IComponent.h"
+
 #include <SFML/Graphics/Transform.hpp>
 
-class TransformComponent
+class TransformComponent : public IComponent
 {
 public:
 	struct DecomposedData
@@ -12,7 +14,7 @@ public:
 		sf::Vector2f Scale;
 	};
 
-	TransformComponent();
+	TransformComponent( Entity& ParentEntity);
 	~TransformComponent();
 
 
@@ -30,9 +32,9 @@ public:
 	void SetScale(sf::Vector2f newScale);
 	sf::Vector2f GetScale() const;
 
-	void Start();
-	void Update(float fDeltaTime);
-	void Destroy();
+	void Start() override;
+	void Update(float fDeltaTime) override;
+	void Destroy() override;
 
 private:
 	sf::Transform Matrix;

@@ -1,6 +1,7 @@
 #include "TransformComponent.h"
 
-TransformComponent::TransformComponent()
+TransformComponent::TransformComponent(Entity& ParentEntity)
+	: IComponent(ParentEntity)
 {
 	WorldPosition = sf::Vector2f();
 	WorldPositionQuery = sf::Vector2f();

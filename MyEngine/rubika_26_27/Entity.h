@@ -2,14 +2,17 @@
 
 #include <string>
 
+//#include "RenderComponent.h"
+
 namespace sf
 {
 	class RenderWindow;
 }
 
 class TransformComponent;
+class RenderComponent;
 
-class Entity
+class Entity //: public RenderComponent
 {
 public:
 	Entity(std::string friendlyName = "");
@@ -33,4 +36,5 @@ public:
 protected:
 	std::string FriendlyName;
 	TransformComponent* Transform;
+	RenderComponent* Render;
 };

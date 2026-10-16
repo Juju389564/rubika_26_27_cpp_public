@@ -9,6 +9,7 @@
 #include <Scene.h>
 #include <SceneMgr.h>
 #include <TextureMgr.h>
+#include <Entity.h>
 #include <memory>
 
 int main()
@@ -30,6 +31,11 @@ int main()
     gData.SceneMgr->SetActiveScene("Menu");
 
     sf::RenderWindow window(sf::VideoMode({ 1080, 720 }), "SFML works!", sf::State::Windowed);
+
+    auto scene = std::make_unique<Scene>("Test");
+    scene->AddEntity(std::make_unique<Entity>("Rectangle test"));
+    gData.SceneMgr->AddScene(std::move(scene));
+    gData.SceneMgr->SetActiveScene("Test");
 
     ImGui::SFML::Init(window);
 
