@@ -4,6 +4,7 @@
 #include <Logger.h>
 #include <SceneMgr.h>
 #include <TextureMgr.h>
+#include <InputMgr.h>
 
 Globals gData;
 
@@ -13,6 +14,7 @@ Globals::Globals() : FrameCount(0)
 	Logger = new ::Logger();
 	SceneMgr = new ::SceneMgr();
 	TextureMgr = new ::TextureMgr();
+	InputMgr = new ::InputMgr();
 }
 
 Globals::~Globals()
@@ -25,10 +27,12 @@ void Globals::Init()
 	Logger->Init();
 	SceneMgr->Init();
 	TextureMgr->Init();
+	InputMgr->Init();
 }
 
 void Globals::Update(float deltaTime)
 {
+	InputMgr->Update(deltaTime);
 	SceneMgr->Update(deltaTime);
 }
 
@@ -37,6 +41,7 @@ void Globals::Shut()
 	Logger->Shut();
 	SceneMgr->Shut();
 	TextureMgr->Shut();
+	InputMgr->Shut();
 }
 
 void Globals::Destroy()

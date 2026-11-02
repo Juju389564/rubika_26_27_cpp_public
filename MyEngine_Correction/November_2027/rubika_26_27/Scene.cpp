@@ -43,6 +43,11 @@ Entity* Scene::CreateEntity(const std::string& entityName)
 	return e;
 }
 
+Entity* Scene::GetEntity(int indexEntity)
+{
+	return Entities[indexEntity];
+}
+
 void Scene::RemoveEntity(Entity* entity)
 {
 	for (auto it = Entities.begin(); it != Entities.end(); ++it)

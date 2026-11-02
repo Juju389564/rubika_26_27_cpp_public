@@ -4,6 +4,7 @@ class DebugMgr;
 class SceneMgr;
 class TextureMgr;
 class Logger;
+class InputMgr;
 
 class Globals
 {
@@ -24,6 +25,7 @@ public:
 	Logger* Logger;
 	SceneMgr* SceneMgr;
 	TextureMgr* TextureMgr;
+	InputMgr* InputMgr;
 };
 
 extern Globals gData;

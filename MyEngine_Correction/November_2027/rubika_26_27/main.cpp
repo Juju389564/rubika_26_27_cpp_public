@@ -12,6 +12,10 @@
 #include <TransformComponent.h>
 #include <RenderComponent.h>
 #include <SpriteDrawable.h>
+//#include <InputMgr.h>
+
+
+sf::Vector2f startPostion = sf::Vector2f(100.f, 100.f);
 
 int main()
 {
@@ -29,7 +33,7 @@ int main()
         Entity* entity = scene->CreateEntity("MainEntity");
         TransformComponent* tc = entity->AddComponent<TransformComponent>();
         {
-            tc->SetWorldPosition(sf::Vector2f(100.f, 100.f));
+            tc->SetWorldPosition(startPostion);
         }
 
         RenderComponent* rc = entity->AddComponent<RenderComponent>();
@@ -43,13 +47,21 @@ int main()
             headSprite->SetVisibility(true);
             headSprite->SetTexture(texturePath);
             headSprite->SetAnimation("Head_Down");
-        }
+        }        
     }
     gData.SceneMgr->SetActiveScene("Main");
     gData.SceneMgr->Start();
 
     sf::Clock clock;
     clock.restart();
+
+    // variable pour le test de déplacement 
+
+    sf::Vector2f currentPosition = startPostion;
+
+    Entity* currentEntity = scene->GetEntity(0);
+
+    // variable stop here
 
     while (window.isOpen())
     {
@@ -89,6 +101,46 @@ int main()
         //ImGui::ShowDemoWindow();
         //Logger::DrawLogger();
         gData.DebugMgr->Draw();
+         
+        // Test de déplacement du petit sprite d'Isaac
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+        {
+            currentPosition += sf::Vector2f(0.f, 0.01f);
+            TransformComponent* tc = currentEntity->GetComponent<TransformComponent>();
+            {
+                tc->SetWorldPosition(currentPosition);
+            }
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+        {
+            currentPosition += sf::Vector2f(0.f, -0.01f);
+            TransformComponent* tc = currentEntity->GetComponent<TransformComponent>();
+            {
+                tc->SetWorldPosition(currentPosition);
+            }
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+        {
+            currentPosition += sf::Vector2f(- 0.01f, 0.f);
+            TransformComponent* tc = currentEntity->GetComponent<TransformComponent>();
+            {
+                tc->SetWorldPosition(currentPosition);
+            }
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+        {
+            currentPosition += sf::Vector2f(0.01f, 0.f);
+            TransformComponent* tc = currentEntity->GetComponent<TransformComponent>();
+            {
+                tc->SetWorldPosition(currentPosition);
+            }
+        }
+
+        // test déplacement isaac stop here
 
         PROFILER_EVENT_END();
 
@@ -96,6 +148,21 @@ int main()
         window.clear();
 
         gData.SceneMgr->Draw(window);
+
+
+        // s'assure que le test prend aussi en compte la position modifier dans la SceneMgr windows
+
+        TransformComponent* tc = currentEntity->GetComponent<TransformComponent>();
+        {
+            sf::Vector2f CurrentPos = tc->GetWorldPosition();
+            if (currentPosition != CurrentPos)
+            {
+                currentPosition = CurrentPos;
+            }
+        }
+
+        // ajustement position stop here
+
 
 #ifdef _USE_IMGUI
         ImGui::SFML::Render(window);
