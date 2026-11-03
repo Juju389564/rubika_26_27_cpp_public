@@ -69,7 +69,7 @@ void Logger::DrawDebug()
 
 	if (ImGui::BeginTable("Logs##LogConsole", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders))
 	{
-		ImGui::TableSetupColumn("Type");
+		ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, 75.0f);
 		ImGui::TableSetupColumn("Message");
 		ImGui::TableHeadersRow();
 		ImGui::TableNextRow();

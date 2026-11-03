@@ -2,6 +2,9 @@
 
 #include <Globals.h>
 #include <InputAction.h>
+#include <Logger.h>
+
+#include <Imgui/imgui.h>
 
 void InputMgr::Init()
 {
@@ -10,7 +13,13 @@ void InputMgr::Init()
 
 void InputMgr::Update(float deltaTime)
 {
-
+	for (auto& [key, action] : InputActions)
+	{
+		if (action != nullptr)
+		{
+			action->update(deltaTime);
+		}
+	}
 }
 
 
@@ -19,10 +28,6 @@ void InputMgr::Shut()
 	gData.DebugMgr->UnregisterDebugableWindow("InputMgr");
 }
 
-void InputMgr::Draw(sf::RenderWindow& window) const
-{
-
-}
 
 InputAction* InputMgr::CreateInputAction(const std::string& ActionName)
 {	
@@ -48,10 +53,72 @@ void InputMgr::DeleteInputAction(InputAction* ia)
 }
 
 
+void InputMgr::BindActionToKey(InputAction* ia, sf::Keyboard::Key key)
+{
+	const auto& it = InputActions.find(ia->GetActionNameHash());
+	if (it != InputActions.end())
+	{
+		ia->AddActionKey(key);
+	}
+	
+}
+
+void InputMgr::UnbindActionToKey(InputAction* ia, sf::Keyboard::Key key)
+{
+	const auto& it = InputActions.find(ia->GetActionNameHash());
+	if (it != InputActions.end())
+	{
+		ia->DeleteActionKey(key);
+	}
+
+}
+
+void InputMgr::registerCallbackToAction(InputAction* ia, const std::string& debugName, std::function<void(float)> callback, void* owner)
+{
+	const auto& it = InputActions.find(ia->GetActionNameHash());
+	if (it != InputActions.end())
+	{
+		ia->RegisterCallback(debugName, callback, owner);
+	}
+	else
+	{
+		Logger::Error("You try to register a callback to an action that doesn't exist");
+	}
+	
+}
+
+void InputMgr::unregisterCallbacksToAction(InputAction* ia, void* owner)
+{
+	const auto& it = InputActions.find(ia->GetActionNameHash());
+	if (it != InputActions.end())
+	{
+		ia->UnregisterCallbacks(owner);
+	}
+	else
+	{
+		Logger::Error("You try to unregister callbacks to an action that doesn't exist");
+	}
+}
+
+
 void InputMgr::DrawDebug()
 {
 #ifdef _USE_IMGUI
 
+	for (auto it : InputActions)
+	{
+		ImGui::PushID(it.second);
+
+		bool bTree = ImGui::TreeNode("%s (%lld)", it.second->GetActionName().c_str(), it.second->GetActionNameHash());
+
+		if (bTree)
+		{
+			it.second->DrawDebug();
+			ImGui::TreePop();
+		}
+
+		ImGui::PopID();
+	}
 
 #endif
 }

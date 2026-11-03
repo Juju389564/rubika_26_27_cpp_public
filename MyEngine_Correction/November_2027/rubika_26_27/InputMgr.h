@@ -1,7 +1,7 @@
 #pragma once
 
 #include <DebugMgr.h>
-#include <SFML/Window/Keyboard.hpp>
+#include <SFML/Graphics.hpp>
 
 class InputAction;
 
@@ -18,10 +18,16 @@ public:
 
 	void Shut();
 
-	void Draw(sf::RenderWindow& window) const;
-
 	InputAction* CreateInputAction(const std::string& ActionName);
 	void DeleteInputAction(InputAction* ia);
+
+	void BindActionToKey(InputAction* ia, sf::Keyboard::Key key);
+	void UnbindActionToKey(InputAction* ia, sf::Keyboard::Key key);
+
+	void registerCallbackToAction(InputAction* ia, const std::string& debugName, std::function<void(float)> callback, void* owner);
+	void unregisterCallbacksToAction(InputAction* ia, void* owner);
+
+
 
 	virtual void DrawDebug() override;
 
@@ -30,3 +36,4 @@ protected:
 	std::unordered_map<std::size_t, InputAction*> InputActions;
 
 };
+

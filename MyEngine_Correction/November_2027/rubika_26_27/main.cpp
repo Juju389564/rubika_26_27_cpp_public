@@ -12,10 +12,22 @@
 #include <TransformComponent.h>
 #include <RenderComponent.h>
 #include <SpriteDrawable.h>
-//#include <InputMgr.h>
+#include <InputMgr.h>
+#include <InputAction.h>
 
 
 sf::Vector2f startPostion = sf::Vector2f(100.f, 100.f);
+
+//std::function<void(float)> testCallback;
+
+void moveEntity(float valueAction, sf::Vector2f currentPosition, TransformComponent* tc, sf::Vector2f direction)
+{
+    if (valueAction == 1)
+    {
+        currentPosition += sf::Vector2f(direction);
+        tc->SetWorldPosition(currentPosition);
+    }
+}
 
 int main()
 {
@@ -24,6 +36,26 @@ int main()
     sf::RenderWindow window(sf::VideoMode({ 1080, 720 }), "SFML works!", sf::State::Windowed);
 
     ImGui::SFML::Init(window);
+
+    Logger::Info("This is an info message. That is useful");
+    Logger::Warning("This is a warning message. Should I worry?");
+    Logger::Error("This is an error message. Oh sh*t!!");
+    
+    /*
+    InputAction* inputAction = gData.InputMgr->CreateInputAction("FirstAction");
+    gData.InputMgr->registerCallbackToAction(inputAction, "Random Action", testCallback, nullptr);*/
+
+    InputAction* upAction = gData.InputMgr->CreateInputAction("Up action");
+    gData.InputMgr->BindActionToKey(upAction, sf::Keyboard::Key::Up);
+    
+    InputAction* downAction = gData.InputMgr->CreateInputAction("Down action");
+    gData.InputMgr->BindActionToKey(downAction, sf::Keyboard::Key::Down);
+
+    InputAction* leftAction = gData.InputMgr->CreateInputAction("Left action");
+    gData.InputMgr->BindActionToKey(leftAction, sf::Keyboard::Key::Left);
+
+    InputAction* rightAction = gData.InputMgr->CreateInputAction("Right action");
+    gData.InputMgr->BindActionToKey(rightAction, sf::Keyboard::Key::Right);
 
     const char* texturePath = "../../../MyEngine/Ressources/IsaacSprite.png";
     gData.TextureMgr->LoadTexture(texturePath);
@@ -58,6 +90,15 @@ int main()
     // variable pour le test de déplacement 
 
     sf::Vector2f currentPosition = startPostion;
+
+    float speed = 0.01f;
+
+    sf::Vector2f up = sf::Vector2f(0.f, -speed);
+    sf::Vector2f down = sf::Vector2f(0.f, speed);
+    sf::Vector2f left = sf::Vector2f(-speed,0.f);
+    sf::Vector2f right = sf::Vector2f(speed,0.f);
+
+
 
     Entity* currentEntity = scene->GetEntity(0);
 
@@ -102,7 +143,21 @@ int main()
         //Logger::DrawLogger();
         gData.DebugMgr->Draw();
          
-        // Test de déplacement du petit sprite d'Isaac
+        TransformComponent* tc = currentEntity->GetComponent<TransformComponent>();
+        {
+            sf::Vector2f CurrentPos = tc->GetWorldPosition();
+            if (currentPosition != CurrentPos)
+            {
+                currentPosition = CurrentPos;
+            }
+        }
+
+        moveEntity(upAction->GetValue(), currentPosition, tc, up);
+        moveEntity(downAction->GetValue(), currentPosition, tc, down);
+        moveEntity(leftAction->GetValue(), currentPosition, tc, left);
+        moveEntity(rightAction->GetValue(), currentPosition, tc, right);
+
+        /* // Test de déplacement du petit sprite d'Isaac
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
         {
@@ -140,7 +195,7 @@ int main()
             }
         }
 
-        // test déplacement isaac stop here
+        // test déplacement isaac stop here */
 
         PROFILER_EVENT_END();
 
@@ -150,18 +205,7 @@ int main()
         gData.SceneMgr->Draw(window);
 
 
-        // s'assure que le test prend aussi en compte la position modifier dans la SceneMgr windows
-
-        TransformComponent* tc = currentEntity->GetComponent<TransformComponent>();
-        {
-            sf::Vector2f CurrentPos = tc->GetWorldPosition();
-            if (currentPosition != CurrentPos)
-            {
-                currentPosition = CurrentPos;
-            }
-        }
-
-        // ajustement position stop here
+        
 
 
 #ifdef _USE_IMGUI
