@@ -1,10 +1,14 @@
 #include <InputAction.h>
 
-InputAction::InputAction(const std::string& name) : ActionName(name) {}
+InputAction::InputAction(const std::string& name) : ActionName(name) 
+{
+	ActionNameHash = std::hash<std::string>{} (ActionName);
+}
 
 void InputAction::SetActionName(const std::string& name)
 {
 	ActionName = name;
+	ActionNameHash = std::hash<std::string>{} (ActionName);
 }
 
 void InputAction::SetValue(float value)

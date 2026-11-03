@@ -13,6 +13,9 @@ public:
 	void RegisterCallback(const std::string& debugName, std::function<void(float)> callback, void* owner);
 	void UnregisterCallbacks(void* owner);
 
+	const std::string& GetActionName() const { return ActionName; };
+	std::size_t GetActionNameHash() const {return ActionNameHash;};
+
 private:
 	struct sCallbackInfo
 	{
