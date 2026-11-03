@@ -14,20 +14,29 @@ void InputAction::SetValue(float value)
 
 void InputAction::RegisterCallback(const std::string& debugName, std::function<void(float)> callback, void* owner)
 {
-	Callbacks.emplace(ActionNameHash, sCallbackInfo{ debugName, callback, owner });
+	Callbacks.emplace_back(sCallbackInfo{ debugName, callback, owner });
 }
 
 void InputAction::UnregisterCallbacks(void* owner)
 {
-	for (auto i = Callbacks.begin() ; i != Callbacks.end(); ++i)
+	/*
+	std::size_t vectorSize = Callbacks.size();
+	for (std::size_t i = vectorSize; i > 0; --i)
 	{
-		auto callbackKey = i->first;
-		const auto& callback = Callbacks.find(callbackKey);
-		
-		/*
-		if ()  // trouver owner de callback pour comparer à celui envoyer ici et si c'est le même suppr callback de Callbacks
+		sCallbackInfo callback = Callbacks.at(i);
+		if (callback.Owner == owner)
 		{
+			Callbacks.erase(i);
+		}
+	}*/
 
-		}*/
+	for (auto i = begin(Callbacks); i != end(Callbacks); ++i)
+	{
+		if (i->Owner == owner)
+		{
+			delete(&i);
+			Callbacks.erase(i);
+		}
 	}
+	
 }

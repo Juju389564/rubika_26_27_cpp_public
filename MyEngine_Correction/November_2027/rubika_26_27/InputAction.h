@@ -24,5 +24,5 @@ private:
 	std::string ActionName;
 	std::size_t ActionNameHash;
 	float Value = 0.f;
-	std::unordered_map<std::size_t, sCallbackInfo> Callbacks;
+	std::vector<sCallbackInfo> Callbacks;
 };
