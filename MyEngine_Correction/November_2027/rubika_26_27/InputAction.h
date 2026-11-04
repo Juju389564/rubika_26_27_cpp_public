@@ -28,6 +28,12 @@ public:
 	std::size_t GetActionNameHash() const {return ActionNameHash;};
 	float GetValue() { return Value; };
 
+	struct keyType
+	{
+		const char* keyString;
+		sf::Keyboard::Key sfKey;
+	};
+
 private:
 	struct sCallbackInfo
 	{
@@ -36,9 +42,11 @@ private:
 		void* Owner = nullptr;
 	};
 
+
 	std::string ActionName;
 	std::size_t ActionNameHash;
 	float Value = 0.f;
 	std::vector<sCallbackInfo> Callbacks;
 	std::vector <sf::Keyboard::Key> actionKeys;
+	char NewKeyName[32] = "";
 };
