@@ -18,15 +18,25 @@
 
 sf::Vector2f startPostion = sf::Vector2f(100.f, 100.f);
 
-//std::function<void(float)> testCallback;
-
-void moveEntity(float valueAction, sf::Vector2f currentPosition, TransformComponent* tc, sf::Vector2f direction)
+struct directions
 {
-    if (valueAction == 1)
+    InputAction* directionAction;
+    sf::Vector2f directionVector;
+};
+
+
+void moveEntity(std::vector<directions> directionVector, sf::Vector2f currentPosition, TransformComponent* tc)
+{
+    for (auto& [action, direction] : directionVector)
     {
-        currentPosition += sf::Vector2f(direction);
-        tc->SetWorldPosition(currentPosition);
+        float valueAction = action->GetValue();
+        if (valueAction == 1)
+        {
+            currentPosition += sf::Vector2f(direction);
+            tc->SetWorldPosition(currentPosition);
+        }
     }
+    
 }
 
 int main()
@@ -41,21 +51,34 @@ int main()
     Logger::Warning("This is a warning message. Should I worry?");
     Logger::Error("This is an error message. Oh sh*t!!");
     
-    /*
-    InputAction* inputAction = gData.InputMgr->CreateInputAction("FirstAction");
-    gData.InputMgr->registerCallbackToAction(inputAction, "Random Action", testCallback, nullptr);*/
+
+    sf::Vector2f currentPosition = startPostion;
+
+    float speed = 0.01f;
+
+    sf::Vector2f up = sf::Vector2f(0.f, -speed);
+    sf::Vector2f down = sf::Vector2f(0.f, speed);
+    sf::Vector2f left = sf::Vector2f(-speed, 0.f);
+    sf::Vector2f right = sf::Vector2f(speed, 0.f);
+
+    std::vector<directions> directionVector;
 
     InputAction* upAction = gData.InputMgr->CreateInputAction("Up action");
     gData.InputMgr->BindActionToKey(upAction, sf::Keyboard::Key::Up);
+    directionVector.push_back(directions{ upAction, up });
     
     InputAction* downAction = gData.InputMgr->CreateInputAction("Down action");
     gData.InputMgr->BindActionToKey(downAction, sf::Keyboard::Key::Down);
+    directionVector.push_back(directions{ downAction, down });
 
     InputAction* leftAction = gData.InputMgr->CreateInputAction("Left action");
     gData.InputMgr->BindActionToKey(leftAction, sf::Keyboard::Key::Left);
+    directionVector.push_back(directions{ leftAction, left });
 
     InputAction* rightAction = gData.InputMgr->CreateInputAction("Right action");
     gData.InputMgr->BindActionToKey(rightAction, sf::Keyboard::Key::Right);
+    directionVector.push_back(directions{ rightAction, right });
+
 
     const char* texturePath = "../../../MyEngine/Ressources/IsaacSprite.png";
     gData.TextureMgr->LoadTexture(texturePath);
@@ -87,22 +110,9 @@ int main()
     sf::Clock clock;
     clock.restart();
 
-    // variable pour le test de déplacement 
-
-    sf::Vector2f currentPosition = startPostion;
-
-    float speed = 0.01f;
-
-    sf::Vector2f up = sf::Vector2f(0.f, -speed);
-    sf::Vector2f down = sf::Vector2f(0.f, speed);
-    sf::Vector2f left = sf::Vector2f(-speed,0.f);
-    sf::Vector2f right = sf::Vector2f(speed,0.f);
-
-
-
+    
     Entity* currentEntity = scene->GetEntity(0);
 
-    // variable stop here
 
     while (window.isOpen())
     {
@@ -152,50 +162,7 @@ int main()
             }
         }
 
-        moveEntity(upAction->GetValue(), currentPosition, tc, up);
-        moveEntity(downAction->GetValue(), currentPosition, tc, down);
-        moveEntity(leftAction->GetValue(), currentPosition, tc, left);
-        moveEntity(rightAction->GetValue(), currentPosition, tc, right);
-
-        /* // Test de déplacement du petit sprite d'Isaac
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
-        {
-            currentPosition += sf::Vector2f(0.f, 0.01f);
-            TransformComponent* tc = currentEntity->GetComponent<TransformComponent>();
-            {
-                tc->SetWorldPosition(currentPosition);
-            }
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
-        {
-            currentPosition += sf::Vector2f(0.f, -0.01f);
-            TransformComponent* tc = currentEntity->GetComponent<TransformComponent>();
-            {
-                tc->SetWorldPosition(currentPosition);
-            }
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
-        {
-            currentPosition += sf::Vector2f(- 0.01f, 0.f);
-            TransformComponent* tc = currentEntity->GetComponent<TransformComponent>();
-            {
-                tc->SetWorldPosition(currentPosition);
-            }
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
-        {
-            currentPosition += sf::Vector2f(0.01f, 0.f);
-            TransformComponent* tc = currentEntity->GetComponent<TransformComponent>();
-            {
-                tc->SetWorldPosition(currentPosition);
-            }
-        }
-
-        // test déplacement isaac stop here */
+        moveEntity(directionVector, currentPosition, tc);
 
         PROFILER_EVENT_END();
 
