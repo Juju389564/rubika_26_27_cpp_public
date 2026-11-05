@@ -11,6 +11,7 @@
 #include <Entity.h>
 #include <TransformComponent.h>
 #include <RenderComponent.h>
+#include <DynamicColliderComponent.h>
 #include <SpriteDrawable.h>
 #include <InputMgr.h>
 #include <InputAction.h>
@@ -25,7 +26,7 @@ struct directions
 };
 
 
-void moveEntity(std::vector<directions> directionVector, sf::Vector2f currentPosition, TransformComponent* tc)
+void moveEntity(std::vector<directions> directionVector, sf::Vector2f currentPosition, TransformComponent* tc, DynamicColliderComponent* dc)
 {
     for (auto& [action, direction] : directionVector)
     {
@@ -34,6 +35,7 @@ void moveEntity(std::vector<directions> directionVector, sf::Vector2f currentPos
         {
             currentPosition += sf::Vector2f(direction);
             tc->SetWorldPosition(currentPosition);
+
         }
     }
     
@@ -103,6 +105,14 @@ int main()
             headSprite->SetTexture(texturePath);
             headSprite->SetAnimation("Head_Down");
         }        
+
+        DynamicColliderComponent* dc = entity->AddComponent<DynamicColliderComponent>();
+        {
+            dc->SetPosition(tc);
+            dc->SetSize(sf::Vector2f(25.f, 33.f), tc);
+            dc->SetOffset(sf::Vector2f(0.f, -20.f), tc);
+        }
+
     }
     gData.SceneMgr->SetActiveScene("Main");
     gData.SceneMgr->Start();
@@ -161,8 +171,9 @@ int main()
                 currentPosition = CurrentPos;
             }
         }
-
-        moveEntity(directionVector, currentPosition, tc);
+        DynamicColliderComponent* dc = currentEntity->GetComponent<DynamicColliderComponent>();
+        
+        moveEntity(directionVector, currentPosition, tc, dc);
 
         PROFILER_EVENT_END();
 
@@ -170,7 +181,7 @@ int main()
         window.clear();
 
         gData.SceneMgr->Draw(window);
-
+        dc->draw(window);
 
         
 
