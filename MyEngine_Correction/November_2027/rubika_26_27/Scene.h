@@ -22,6 +22,13 @@ public:
 	virtual void Destroy();
 
 	Entity* CreateEntity(const std::string& entityName);
+
+	template <typename E>
+	E* AddEntity();
+
+	template <typename E>
+	E* GetEntity() const;
+
 	Entity* GetEntity(int indexEntity);
 	void RemoveEntity(Entity* entity);
 
@@ -41,3 +48,5 @@ protected:
 	std::size_t Hash;
 	std::vector<Entity*> Entities;
 };
+
+#include <Scene.hxx>

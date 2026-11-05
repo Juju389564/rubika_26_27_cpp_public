@@ -217,6 +217,7 @@
     <ClCompile Include="InputMgr.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="RectangleDrawable.cpp" />
     <ClCompile Include="RenderComponent.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -253,11 +254,13 @@
     <ClInclude Include="InputAction.h" />
     <ClInclude Include="InputMgr.h" />
     <ClInclude Include="Logger.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Profiler.h" />
     <ClInclude Include="RectangleDrawable.h" />
     <ClInclude Include="RenderComponent.h" />
     <ClInclude Include="RendererComponent.hxx" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Scene.hxx" />
     <ClInclude Include="SceneMgr.h" />
     <ClInclude Include="SpriteDrawable.h" />
     <ClInclude Include="TextureMgr.h" />

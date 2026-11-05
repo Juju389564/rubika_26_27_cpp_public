@@ -43,6 +43,7 @@ Entity* Scene::CreateEntity(const std::string& entityName)
 	return e;
 }
 
+
 Entity* Scene::GetEntity(int indexEntity)
 {
 	return Entities[indexEntity];

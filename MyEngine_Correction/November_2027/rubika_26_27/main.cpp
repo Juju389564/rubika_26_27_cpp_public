@@ -15,8 +15,9 @@
 #include <SpriteDrawable.h>
 #include <InputMgr.h>
 #include <InputAction.h>
+#include <Player.h>
 
-
+/*
 sf::Vector2f startPostion = sf::Vector2f(100.f, 100.f);
 
 struct directions
@@ -40,6 +41,8 @@ void moveEntity(std::vector<directions> directionVector, sf::Vector2f currentPos
     }
     
 }
+*/
+
 
 int main()
 {
@@ -53,7 +56,7 @@ int main()
     Logger::Warning("This is a warning message. Should I worry?");
     Logger::Error("This is an error message. Oh sh*t!!");
     
-
+    /*
     sf::Vector2f currentPosition = startPostion;
 
     float speed = 0.01f;
@@ -80,18 +83,24 @@ int main()
     InputAction* rightAction = gData.InputMgr->CreateInputAction("Right action");
     gData.InputMgr->BindActionToKey(rightAction, sf::Keyboard::Key::Right);
     directionVector.push_back(directions{ rightAction, right });
-
+    
 
     const char* texturePath = "../../../MyEngine/Ressources/IsaacSprite.png";
     gData.TextureMgr->LoadTexture(texturePath);
+    */
 
     Scene* scene = gData.SceneMgr->CreateScene("Main");
     {
-        Entity* entity = scene->CreateEntity("MainEntity");
+        Player* player = scene->AddEntity<Player>();
+
+
+        /*
+        Entity* entity = scene->CreateEntity("Main entity");
+
         TransformComponent* tc = entity->AddComponent<TransformComponent>();
         {
             tc->SetWorldPosition(startPostion);
-        }
+        }      
 
         RenderComponent* rc = entity->AddComponent<RenderComponent>();
         {
@@ -112,7 +121,7 @@ int main()
             dc->SetSize(sf::Vector2f(25.f, 33.f), tc);
             dc->SetOffset(sf::Vector2f(0.f, -20.f), tc);
         }
-
+        */
     }
     gData.SceneMgr->SetActiveScene("Main");
     gData.SceneMgr->Start();
@@ -162,7 +171,9 @@ int main()
         //ImGui::ShowDemoWindow();
         //Logger::DrawLogger();
         gData.DebugMgr->Draw();
-         
+
+
+        /*
         TransformComponent* tc = currentEntity->GetComponent<TransformComponent>();
         {
             sf::Vector2f CurrentPos = tc->GetWorldPosition();
@@ -174,6 +185,7 @@ int main()
         DynamicColliderComponent* dc = currentEntity->GetComponent<DynamicColliderComponent>();
         
         moveEntity(directionVector, currentPosition, tc, dc);
+        */
 
         PROFILER_EVENT_END();
 
@@ -181,7 +193,7 @@ int main()
         window.clear();
 
         gData.SceneMgr->Draw(window);
-        dc->draw(window);
+        //dc->draw(window);
 
         
 
