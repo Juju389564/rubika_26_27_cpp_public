@@ -13,10 +13,7 @@
 
 Player::Player() : Entity("Player")
 {
-    TransformComponent* tc = this->AddComponent<TransformComponent>();
-    {
-        tc->SetWorldPosition(startPostion);
-    }
+    
 }
 
 Player::~Player()
@@ -25,10 +22,13 @@ Player::~Player()
 
 void Player::Start()
 {
+    TransformComponent* tc = this->AddComponent<TransformComponent>();
+    {
+        tc->SetWorldPosition(startPostion);
+    }
     const char* texturePath = "../../../MyEngine/Ressources/IsaacSprite.png";
     gData.TextureMgr->LoadTexture(texturePath);
 
-    TransformComponent* tc = this->AddComponent<TransformComponent>();
 
     sf::Vector2f currentPosition = startPostion;
 
@@ -75,6 +75,7 @@ void Player::Start()
         dc->SetOffset(sf::Vector2f(0.f, -20.f), tc);
     }
 
+    Entity::Start();
 }
 
 void Player::Update(float deltaTime)
@@ -90,14 +91,16 @@ void Player::Update(float deltaTime)
     DynamicColliderComponent* dc = this->GetComponent<DynamicColliderComponent>();
 
     moveEntity(directionVector, currentPosition, tc, dc);
+
+    Entity::Update(deltaTime);
 }
 
 void Player::Destroy()
 {
-
+    Entity::Destroy();
 }
 
-void moveEntity(std::vector<Player::directions> directionVector, sf::Vector2f currentPosition, TransformComponent* tc, DynamicColliderComponent* dc)
+void Player::moveEntity(std::vector<Player::directions> directionVector, sf::Vector2f currentPosition, TransformComponent* tc, DynamicColliderComponent* dc)
 {
     for (auto& [action, direction] : directionVector)
     {

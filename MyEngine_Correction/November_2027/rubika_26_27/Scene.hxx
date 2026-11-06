@@ -11,7 +11,7 @@ inline E* Scene::AddEntity()
 	if (GetEntity<E>())
 		return nullptr;
 
-	E* entity = new E(*this);
+	E* entity = new E();
 	Entities.push_back(entity);
 	return entity;
 }
