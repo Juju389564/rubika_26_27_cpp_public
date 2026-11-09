@@ -206,5 +206,8 @@
     <ClInclude Include="Scene.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ConfigFlag.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

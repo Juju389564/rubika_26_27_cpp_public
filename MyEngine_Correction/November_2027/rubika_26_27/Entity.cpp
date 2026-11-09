@@ -4,6 +4,8 @@
 #include <RenderComponent.h>
 #include <Imgui/imgui.h>
 
+#include <ConfigFlag.h>
+
 
 Entity::Entity(std::string friendlyName) : FriendlyName(friendlyName)
 {}
@@ -63,4 +65,44 @@ void Entity::DrawDebug()
 		}
 	}
 #endif
+}
+
+
+
+void Entity::AddNewTag(__int8 tag)
+{
+	colliderState |= tag;
+}
+
+void Entity::RemoveTag(__int8 tag)
+{
+	colliderState &= ~tag;
+}
+
+bool Entity::HasTag(__int8 tag)
+{
+	if (colliderState &= tag )
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void Entity::AddNewTags(std::vector<__int8> tags)
+{
+	for (__int8 tag : tags)
+	{
+		AddNewTag(tag);
+	}
+}
+
+void Entity::RemoveTags(std::vector<__int8> tags)
+{
+	for (__int8 tag : tags)
+	{
+		RemoveTag(tag);
+	}
 }
